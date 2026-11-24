@@ -5,10 +5,8 @@ every MQTT client connects, with or without a username/password.
 
 ## Install
 
-1. In `repository.yaml` and `mosquitto_anonymous/config.yaml`, replace
-   `YOUR_USER/YOUR_REPO` with your GitHub repository and push this folder to it.
-2. In Home Assistant: **Settings > Add-ons > Add-on store > ⋮ > Repositories**,
-   add your repository URL.
-3. Install **Mosquitto broker (anonymous)**. It is built on your device, so the
+1. In Home Assistant: **Settings > Add-ons > Add-on store > ⋮ > Repositories**,
+   add `https://github.com/Edgar-Grigoryan/mosquitto-anonymous-addon`.
+2. Install **Mosquitto broker (anonymous)**. It is built on your device, so the
    first install takes several minutes.
-4. If the official Mosquitto broker is installed, stop it first (same ports).
+3. If the official Mosquitto broker is installed, stop it first (same ports).

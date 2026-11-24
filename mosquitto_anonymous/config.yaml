@@ -3,7 +3,7 @@ version: 1.0.0
 slug: mosquitto_anonymous
 name: Mosquitto broker (anonymous)
 description: Mosquitto MQTT broker that accepts all clients, with or without credentials
-url: https://github.com/YOUR_USER/YOUR_REPO
+url: https://github.com/Edgar-Grigoryan/mosquitto-anonymous-addon
 arch:
   - aarch64
   - amd64
