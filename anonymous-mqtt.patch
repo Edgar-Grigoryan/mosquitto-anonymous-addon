@@ -1,0 +1,40 @@
+diff --git a/mosquitto/rootfs/usr/share/tempio/mosquitto.gtpl b/mosquitto/rootfs/usr/share/tempio/mosquitto.gtpl
+index 4f41ffb..c7951c1 100644
+--- a/mosquitto/rootfs/usr/share/tempio/mosquitto.gtpl
++++ b/mosquitto/rootfs/usr/share/tempio/mosquitto.gtpl
+@@ -27,31 +27,10 @@ persistence_location /data/
+ # is busy and cannot read messages fast enough
+ max_queued_messages 8192
+ 
+-# Authentication plugin
+-auth_plugin /usr/share/mosquitto/go-auth.so
+-# Restore pre-7.0 behaviour: allow '/' in client ids and usernames.
+-# The addon's ACL file does not use pattern substitution (%c/%u), so
+-# mosquitto 2.1's broker-side rejection of +, #, / is not needed here.
+-auth_plugin_deny_special_chars false
+-auth_opt_backends files,http
+-auth_opt_hasher pbkdf2
+-auth_opt_cache true
+-auth_opt_auth_cache_seconds 300
+-auth_opt_auth_jitter_seconds 30
+-auth_opt_acl_cache_seconds 300
+-auth_opt_acl_jitter_seconds 30
+-auth_opt_log_level {{ if .debug }}debug{{ else }}error{{ end }}
+-
+-# HTTP backend for the authentication plugin
+-auth_opt_files_password_path /etc/mosquitto/pw
+-auth_opt_files_acl_path /etc/mosquitto/acl
+-
+-# HTTP backend for the authentication plugin
+-auth_opt_http_host 127.0.0.1
+-auth_opt_http_port 80
+-auth_opt_http_getuser_uri /authentication
+-auth_opt_http_superuser_uri /superuser
+-auth_opt_http_aclcheck_uri /acl
++# Anonymous access: accept every client, and ignore any username/password
++# a client sends. The go-auth plugin is intentionally not loaded, since it
++# would reject clients presenting credentials that are not in its backends.
++allow_anonymous true
+ 
+ {{ if .customize }}
+ include_dir /share/{{ .customize_folder }}

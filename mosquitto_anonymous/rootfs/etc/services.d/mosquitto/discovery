@@ -1,0 +1,53 @@
+#!/usr/bin/with-contenv bashio
+# vim: ft=bash
+# shellcheck shell=bash
+# ==============================================================================
+# Send MQTT discovery information to Home Assistant and service information
+# to the Supervisor (for other add-ons).
+# ==============================================================================
+declare config
+
+# Wait for mosquitto to start before continuing
+bashio::net.wait_for 1883
+
+# The broker ignores credentials; these placeholders only satisfy consumers
+# that expect a username and password.
+readonly DUMMY_PASSWORD="anonymous"
+
+# Create discovery config payload for Home Assistant
+config=$(bashio::var.json \
+    host "$(hostname)" \
+    port "^1883" \
+    ssl "^false" \
+    protocol "3.1.1" \
+    username "homeassistant" \
+    password "${DUMMY_PASSWORD}" \
+)
+
+# Send discovery info
+if bashio::discovery "mqtt" "${config}" > /dev/null; then
+    bashio::log.info "Successfully send discovery information to Home Assistant."
+else
+    bashio::log.error "Discovery message to Home Assistant failed!"
+fi
+
+# Create service config payload for other add-ons
+config=$(bashio::var.json \
+    host "$(hostname)" \
+    port "^1883" \
+    ssl "^false" \
+    protocol "3.1.1" \
+    username "addons" \
+    password "${DUMMY_PASSWORD}" \
+)
+
+# Remove any stale MQTT service registration left behind by a previous run.
+# Note: you can't redirect LOG_FD without eval
+eval "bashio::services.delete mqtt &> /dev/null ${LOG_FD}> /dev/null" || true
+
+# Send service info
+if bashio::services.publish "mqtt" "${config}" > /dev/null 2>&1; then
+    bashio::log.info "Successfully send service information to the Supervisor."
+else
+    bashio::log.error "Service message to Supervisor failed!"
+fi
